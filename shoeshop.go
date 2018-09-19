@@ -33,6 +33,12 @@ type Shoe struct {
 	Price float32
 }
 
+type ShoeServer interface {
+	Create(resp http.ResponseWriter, r *http.Request)
+	Get(resp http.ResponseWriter, r *http.Request)
+	Remove(resp http.ResponseWriter, r *http.Request)
+}
+
 func handlerWrapper(h http.HandlerFunc) http.HandlerFunc {
 	return basicAuth(h)
 }
@@ -42,7 +48,7 @@ func (m *MyHandler) StatusHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("200 HTTP status code returned!"))
 }
 
-func generateID(shoe Shoe) string {
+func GenerateID(shoe Shoe) string {
 	idCounter++
 	var str []string
 	str = append(str, strings.ToLower(shoe.Brand[:3]))
@@ -59,7 +65,7 @@ func (m *MyHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
-	shoe.ID = generateID(shoe)
+	shoe.ID = GenerateID(shoe)
 
 	if err := db.Save(&shoe).Error; err != nil {
 		log.Info("Error save")
