@@ -1,0 +1,26 @@
+VERSION := $(shell cat ./VERSION)
+
+linux:
+	GOOS=linux GOARCH=amd64 go build -o release/linux_shoeshop .
+
+windows:
+	GOOS=windows GOARCH=amd64 go build -o release/win_shoeshop.exe .
+
+raspberry:
+	GOOS=linux GOARCH=arm GOARM=6 go build -o release/arm_shoeshop .
+
+osx:
+	GOOS=darwin GOARCH=amd64 go build -o release/osx_shoeshop .
+
+install:
+	go install .
+
+release:
+	GOOS=linux GOARCH=amd64 go build -o release/linux_shoeshop .
+	GOOS=windows GOARCH=amd64 go build -o release/win_shoeshop.exe .
+	GOOS=linux GOARCH=arm GOARM=6 go build -o release/arm_shoeshop .
+	GOOS=darwin GOARCH=amd64 go build -o release/osx_shoeshop .
+
+git-release:
+	git tag -a $(VERSION) -m "Release" || true
+	git push origin $(VERSION)
